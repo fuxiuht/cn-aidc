@@ -57,9 +57,15 @@ app.use((req, res) => {
   res.status(404).render('404');
 });
 
-app.listen(PORT, () => {
-  console.log(`\n  CN-AIDC智算之心 门户网站已启动`);
-  console.log(`  前台: http://localhost:${PORT}`);
-  console.log(`  后台: http://localhost:${PORT}/admin`);
-  console.log(`  后台账号: admin / admin123\n`);
-});
+// Vercel export
+module.exports = app;
+
+// Local dev server
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`\n  CN-AIDC智算之心 门户网站已启动`);
+    console.log(`  前台: http://localhost:${PORT}`);
+    console.log(`  后台: http://localhost:${PORT}/admin`);
+    console.log(`  后台账号: admin / admin123\n`);
+  });
+}
