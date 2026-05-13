@@ -1,0 +1,129 @@
+<% var pageTitle = article.title %>
+<% var pageDescription = article.summary || article.title %>
+<% var pageKeywords = article.tags || '' %>
+<% var pageImage = article.cover_image || '' %>
+<% var pageType = 'article' %>
+<%- include('header') %>
+
+<div class="breadcrumb">
+  <div class="container">
+    <a href="/">首页</a>
+    <span class="sep">›</span>
+    <% if (article.category_name) { %>
+      <a href="/category/<%= article.category_id %>"><%= article.category_name %></a>
+      <span class="sep">›</span>
+    <% } %>
+    <span class="current"><%= article.title.length > 30 ? article.title.slice(0, 30) + '...' : article.title %></span>
+  </div>
+</div>
+
+<section class="article-page">
+  <div class="container content-layout">
+    <div class="content-left">
+      <article class="article-detail">
+        <div class="article-header">
+          <% if (article.category_name) { %>
+            <a href="/category/<%= article.category_id %>" class="article-cat"><%= article.category_name %></a>
+          <% } %>
+          <h1><%= article.title %></h1>
+          <div class="article-meta-bar">
+            <time>发布时间：<%= (article.created_at || '').slice(0, 16).replace('T', ' ') %></time>
+            <span class="meta-sep">|</span>
+            <span class="meta-views"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> 阅读 <%= article.views || 0 %></span>
+            <% if (article.tags) { %>
+              <span class="meta-sep">|</span>
+              <span class="meta-tags">
+                <% article.tags.split(',').forEach(function(t) { t = t.trim(); if(t) { %>
+                  <a href="/tag/<%= encodeURIComponent(t) %>" class="meta-tag"><%= t %></a>
+                <% }}) %>
+              </span>
+            <% } %>
+          </div>
+        </div>
+
+        <% if (article.cover_image) { %>
+          <div class="article-cover"><img src="<%= article.cover_image %>" alt="<%= article.title %>"></div>
+        <% } %>
+
+        <div class="article-content">
+          <%- article.content %>
+        </div>
+
+        <div class="article-share">
+          <span class="share-label">分享到：</span>
+          <a href="javascript:void(0)" onclick="window.open('https://service.weibo.com/share/share.php?url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title))" class="share-btn weibo">微博</a>
+          <a href="javascript:void(0)" onclick="copyLink()" class="share-btn copy">复制链接</a>
+        </div>
+
+        <div class="article-nav">
+          <% if (prevArticle) { %>
+            <a href="/article/<%= prevArticle.id %>" class="nav-prev">
+              <span class="nav-label">← 上一篇</span>
+              <span class="nav-title"><%= prevArticle.title %></span>
+            </a>
+          <% } else { %>
+            <div class="nav-prev disabled"><span class="nav-label">已是最新</span></div>
+          <% } %>
+          <% if (nextArticle) { %>
+            <a href="/article/<%= nextArticle.id %>" class="nav-next">
+              <span class="nav-label">下一篇 →</span>
+              <span class="nav-title"><%= nextArticle.title %></span>
+            </a>
+          <% } else { %>
+            <div class="nav-next disabled"><span class="nav-label">已是最后</span></div>
+          <% } %>
+        </div>
+
+        <% if (related.length > 0) { %>
+          <div class="related-section">
+            <h3>相关文章</h3>
+            <div class="related-grid">
+              <% related.forEach(function(r) { %>
+                <a href="/article/<%= r.id %>" class="related-item">
+                  <div class="related-cover" style="background-image:url('<%= r.cover_image || '' %>')"></div>
+                  <div class="related-info">
+                    <span class="related-title"><%= r.title %></span>
+                    <time><%= (r.created_at || '').slice(0, 10) %></time>
+                  </div>
+                </a>
+              <% }) %>
+            </div>
+          </div>
+        <% } %>
+      </article>
+    </div>
+
+    <aside class="sidebar">
+      <div class="sidebar-widget">
+        <h3 class="widget-title">热门文章</h3>
+        <div class="hot-list">
+          <% hotArticles.slice(0, 8).forEach(function(h, i) { %>
+            <a href="/article/<%= h.id %>" class="hot-item">
+              <span class="hot-rank <%= i < 3 ? 'top' : '' %>"><%= i + 1 %></span>
+              <div class="hot-info">
+                <span class="hot-title"><%= h.title %></span>
+                <span class="hot-views"><%= h.views || 0 %> 阅读</span>
+              </div>
+            </a>
+          <% }) %>
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "<%= article.title.replace(/"/g, '\\\"') %>",
+  "datePublished": "<%= article.created_at %>",
+  "dateModified": "<%= article.updated_at || article.created_at %>",
+  "author": { "@type": "Organization", "name": "CN-AIDC智算之心" },
+  "publisher": { "@type": "Organization", "name": "CN-AIDC智算之心" }
+  <% if (article.cover_image) { %>,"image": "<%= article.cover_image %>"<% } %>
+  <% if (article.summary) { %>,"description": "<%= article.summary.replace(/"/g, '\\\"') %>"<% } %>
+}
+</script>
+
+<%- include('footer') %>

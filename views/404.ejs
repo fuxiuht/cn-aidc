@@ -1,0 +1,13 @@
+<%
+  var categories = categories || [];
+  var pageTitle = '页面未找到';
+%>
+<%- include('header') %>
+<section class="error-page">
+  <div class="container" style="text-align:center;padding:80px 20px">
+    <h1 style="font-size:72px;color:var(--primary);margin-bottom:16px">404</h1>
+    <p style="font-size:18px;color:var(--text-light);margin-bottom:20px">页面未找到</p>
+    <a href="/" style="display:inline-block;padding:10px 24px;background:var(--primary);color:white;border-radius:8px;font-weight:500">返回首页</a>
+  </div>
+</section>
+<%- include('footer') %>

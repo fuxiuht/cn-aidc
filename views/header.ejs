@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= typeof pageTitle !== 'undefined' && pageTitle ? pageTitle + ' - ' : '' %>CN-AIDC智算之心 | 聚焦智算中心·连接算力生态</title>
+  <meta name="description" content="<%= typeof pageDescription !== 'undefined' && pageDescription ? pageDescription : 'CN-AIDC智算之心，聚焦智算中心，关注数据中心、IDC、超算、云、低碳、大数据、芯片、机器人、AI等领域前沿技术与产业动态。' %>">
+  <meta name="keywords" content="<%= typeof pageKeywords !== 'undefined' && pageKeywords ? pageKeywords : '智算中心,数据中心,AIDC,IDC,AI芯片,液冷,算力,大模型,人工智能' %>">
+  <meta property="og:title" content="<%= typeof pageTitle !== 'undefined' && pageTitle ? pageTitle : 'CN-AIDC智算之心' %>">
+  <meta property="og:description" content="<%= typeof pageDescription !== 'undefined' && pageDescription ? pageDescription : '聚焦智算中心，连接算力生态，赋能数字未来' %>">
+  <meta property="og:image" content="<%= typeof pageImage !== 'undefined' && pageImage ? pageImage : '' %>">
+  <meta property="og:type" content="<%= typeof pageType !== 'undefined' ? pageType : 'website' %>">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+</head>
+<body>
+  <div class="top-bar">
+    <div class="container top-bar-inner">
+      <div class="top-bar-left">
+        <span class="top-date"><%= new Date().toLocaleDateString('zh-CN', {year:'numeric',month:'long',day:'numeric',weekday:'long'}) %></span>
+        <div class="news-ticker">
+          <span class="ticker-label">快讯</span>
+          <div class="ticker-wrap">
+            <div class="ticker-content">
+              <% if (typeof articles !== 'undefined' && articles.length > 0) { %>
+                <% articles.slice(0, 5).forEach(function(a) { %>
+                  <a href="/article/<%= a.id %>"><%= a.title %></a>
+                <% }) %>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="top-bar-right">
+        <a href="/about">关于我们</a>
+      </div>
+    </div>
+  </div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="/" class="logo">
+        <span class="logo-icon">CN·AIDC</span>
+        <span class="logo-text">智算之心</span>
+      </a>
+      <nav class="main-nav">
+        <a href="/" class="<%= currentPath === '/' ? 'active' : '' %>">首页</a>
+        <% if (typeof categories !== 'undefined' && categories.length) { %>
+          <% categories.forEach(function(cat) { %>
+            <a href="/category/<%= cat.id %>" class="<%= currentPath === '/category/' + cat.id ? 'active' : '' %>"><%= cat.name %></a>
+          <% }) %>
+        <% } %>
+      </nav>
+      <div class="header-search">
+        <form action="/search" method="GET" class="search-form">
+          <input type="text" name="q" placeholder="搜索文章..." value="<%= typeof q !== 'undefined' ? q : '' %>">
+          <button type="submit"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></button>
+        </form>
+      </div>
+      <button class="nav-toggle" onclick="document.querySelector('.main-nav').classList.toggle('open');document.querySelector('.header-search').classList.toggle('open')">☰</button>
+    </div>
+  </header>
+  <main class="site-main">

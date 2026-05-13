@@ -1,0 +1,180 @@
+<%- include('header') %>
+
+<% var slides = banners.length > 0 ? banners : featuredArticles; %>
+<% if (slides.length > 0) { %>
+<section class="hero-carousel">
+  <div class="swiper hero-swiper">
+    <div class="swiper-wrapper">
+      <% slides.forEach(function(s) { %>
+        <div class="swiper-slide">
+          <% var link = s.link || (s.id ? '/article/' + s.id : '#'); %>
+          <% var img = s.image || s.cover_image || ''; %>
+          <a href="<%= link %>" class="slide-inner" style="background-image:url('<%= img %>')">
+            <div class="slide-overlay">
+              <div class="container">
+                <% if (s.category_name) { %><span class="slide-cat"><%= s.category_name %></span><% } %>
+                <h2 class="slide-title"><%= s.title %></h2>
+                <% if (s.summary) { %><p class="slide-summary"><%= s.summary %></p><% } %>
+              </div>
+            </div>
+          </a>
+        </div>
+      <% }) %>
+    </div>
+    <div class="swiper-pagination"></div>
+    <div class="swiper-button-prev"></div>
+    <div class="swiper-button-next"></div>
+  </div>
+</section>
+<% } %>
+
+<section class="categories-bar">
+  <div class="container">
+    <div class="cat-list">
+      <a href="/" class="cat-item active">全部</a>
+      <% categories.forEach(function(c) { %>
+        <a href="/category/<%= c.id %>" class="cat-item"><%= c.name %></a>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<section class="main-content">
+  <div class="container content-layout">
+    <div class="content-left">
+      <div class="section-header">
+        <h2 class="section-title">最新文章</h2>
+        <span class="section-count">共 <%= totalCount %> 篇</span>
+      </div>
+      <% if (articles.length === 0) { %>
+        <p class="empty-state">暂无文章，请在后台添加内容</p>
+      <% } else { %>
+        <div class="article-list">
+          <% articles.forEach(function(a, index) { %>
+            <% if (index === 0) { %>
+              <article class="article-card-featured">
+                <a href="/article/<%= a.id %>">
+                  <div class="card-cover-lg" style="background-image:url('<%= a.cover_image || '' %>')">
+                    <% if (!a.cover_image) { %><div class="placeholder-bg"></div><% } %>
+                  </div>
+                  <div class="card-info-lg">
+                    <span class="card-cat"><%= a.category_name || '未分类' %></span>
+                    <h3><%= a.title %></h3>
+                    <p class="card-summary"><%= a.summary || '' %></p>
+                    <div class="card-meta">
+                      <time><%= (a.created_at || '').slice(0, 10) %></time>
+                      <span class="card-views"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> <%= a.views || 0 %></span>
+                    </div>
+                  </div>
+                </a>
+              </article>
+            <% } else { %>
+              <article class="article-card-row">
+                <a href="/article/<%= a.id %>">
+                  <div class="card-cover-sm" style="background-image:url('<%= a.cover_image || '' %>')">
+                    <% if (!a.cover_image) { %><div class="placeholder-bg"></div><% } %>
+                  </div>
+                  <div class="card-info">
+                    <span class="card-cat"><%= a.category_name || '未分类' %></span>
+                    <h3><%= a.title %></h3>
+                    <p class="card-summary"><%= a.summary || '' %></p>
+                    <div class="card-meta">
+                      <time><%= (a.created_at || '').slice(0, 10) %></time>
+                      <span class="card-views"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> <%= a.views || 0 %></span>
+                    </div>
+                  </div>
+                </a>
+              </article>
+            <% } %>
+          <% }) %>
+        </div>
+
+        <% if (totalPages > 1) { %>
+          <div class="pagination">
+            <% if (page > 1) { %>
+              <a href="/?page=<%= page - 1 %>" class="page-btn">上一页</a>
+            <% } %>
+            <% for (var i = 1; i <= totalPages; i++) { %>
+              <a href="/?page=<%= i %>" class="page-num <%= i === page ? 'active' : '' %>"><%= i %></a>
+            <% } %>
+            <% if (page < totalPages) { %>
+              <a href="/?page=<%= page + 1 %>" class="page-btn">下一页</a>
+            <% } %>
+          </div>
+        <% } %>
+      <% } %>
+    </div>
+
+    <aside class="sidebar">
+      <div class="sidebar-widget">
+        <h3 class="widget-title">热门文章</h3>
+        <div class="hot-list">
+          <% hotArticles.slice(0, 8).forEach(function(h, i) { %>
+            <a href="/article/<%= h.id %>" class="hot-item">
+              <span class="hot-rank <%= i < 3 ? 'top' : '' %>"><%= i + 1 %></span>
+              <div class="hot-info">
+                <span class="hot-title"><%= h.title %></span>
+                <span class="hot-views"><%= h.views || 0 %> 阅读</span>
+              </div>
+            </a>
+          <% }) %>
+        </div>
+      </div>
+
+      <% if (tags.length > 0) { %>
+      <div class="sidebar-widget">
+        <h3 class="widget-title">热门标签</h3>
+        <div class="tag-cloud">
+          <% tags.forEach(function(t) { %>
+            <a href="/tag/<%= encodeURIComponent(t.name) %>" class="tag-item"><%= t.name %></a>
+          <% }) %>
+        </div>
+      </div>
+      <% } %>
+
+      <div class="sidebar-widget widget-qrcode">
+        <h3 class="widget-title">关注我们</h3>
+        <div class="qrcode-info">
+          <p>微信公众号</p>
+          <p class="qrcode-name">CN-AIDC智算之心</p>
+          <p class="qrcode-desc">扫码关注获取最新资讯</p>
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<% if (categoryArticles.length > 0) { %>
+<section class="category-sections">
+  <div class="container">
+    <% categoryArticles.forEach(function(cat) { %>
+      <div class="cat-section">
+        <div class="section-header">
+          <h2 class="section-title"><%= cat.name %></h2>
+          <a href="/category/<%= cat.id %>" class="section-more">查看全部 →</a>
+        </div>
+        <div class="cat-article-grid">
+          <% cat.articles.forEach(function(a) { %>
+            <article class="article-card-mini">
+              <a href="/article/<%= a.id %>">
+                <div class="card-cover-mini" style="background-image:url('<%= a.cover_image || '' %>')">
+                  <% if (!a.cover_image) { %><div class="placeholder-bg"></div><% } %>
+                </div>
+                <div class="card-info-mini">
+                  <h4><%= a.title %></h4>
+                  <div class="card-meta">
+                    <time><%= (a.created_at || '').slice(0, 10) %></time>
+                    <span class="card-views"><%= a.views || 0 %> 阅读</span>
+                  </div>
+                </div>
+              </a>
+            </article>
+          <% }) %>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+</section>
+<% } %>
+
+<%- include('footer') %>

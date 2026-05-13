@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= typeof pageTitle !== 'undefined' ? pageTitle : '后台管理' %> - 智算之心</title>
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-body">
+  <aside class="admin-sidebar">
+    <div class="sidebar-header">
+      <span class="logo-icon small">CN·AIDC</span>
+      <span class="sidebar-title">后台管理</span>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="/admin" class="nav-item <%= currentPath === '/admin' || currentPath === '/admin/' ? 'active' : '' %>">📊 仪表盘</a>
+      <a href="/admin/articles" class="nav-item <%= currentPath.includes('/admin/articles') ? 'active' : '' %>">📝 文章管理</a>
+      <a href="/admin/categories" class="nav-item <%= currentPath.includes('/admin/categories') ? 'active' : '' %>">📁 分类管理</a>
+      <a href="/admin/banners" class="nav-item <%= currentPath.includes('/admin/banners') ? 'active' : '' %>">🖼️ Banner管理</a>
+      <div class="nav-divider"></div>
+      <a href="/" class="nav-item" target="_blank">🌐 查看前台</a>
+      <a href="/admin/logout" class="nav-item">🚪 退出登录</a>
+    </nav>
+  </aside>
+  <main class="admin-main">
+    <header class="admin-header">
+      <h2><%= typeof pageTitle !== 'undefined' ? pageTitle : '仪表盘' %></h2>
+      <span class="admin-user">👤 <%= adminName %></span>
+    </header>
+    <div class="admin-content">

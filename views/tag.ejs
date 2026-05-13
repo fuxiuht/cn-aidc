@@ -1,0 +1,90 @@
+<% var pageTitle = '标签：' + tagName %>
+<%- include('header') %>
+
+<div class="breadcrumb">
+  <div class="container">
+    <a href="/">首页</a>
+    <span class="sep">›</span>
+    <span class="current">标签：<%= tagName %></span>
+  </div>
+</div>
+
+<section class="tag-page">
+  <div class="container content-layout">
+    <div class="content-left">
+      <div class="section-header">
+        <h1 class="section-title">标签：<%= tagName %></h1>
+        <span class="section-count">共 <%= totalCount %> 篇</span>
+      </div>
+
+      <% if (articles.length === 0) { %>
+        <p class="empty-state">该标签下暂无文章</p>
+      <% } else { %>
+        <div class="article-list">
+          <% articles.forEach(function(a) { %>
+            <article class="article-card-row">
+              <a href="/article/<%= a.id %>">
+                <div class="card-cover-sm" style="background-image:url('<%= a.cover_image || '' %>')">
+                  <% if (!a.cover_image) { %><div class="placeholder-bg"></div><% } %>
+                </div>
+                <div class="card-info">
+                  <span class="card-cat"><%= a.category_name || '未分类' %></span>
+                  <h3><%= a.title %></h3>
+                  <p class="card-summary"><%= a.summary || '' %></p>
+                  <div class="card-meta">
+                    <time><%= (a.created_at || '').slice(0, 10) %></time>
+                    <span class="card-views"><%= a.views || 0 %> 阅读</span>
+                  </div>
+                </div>
+              </a>
+            </article>
+          <% }) %>
+        </div>
+
+        <% if (totalPages > 1) { %>
+          <div class="pagination">
+            <% if (page > 1) { %>
+              <a href="/tag/<%= encodeURIComponent(tagName) %>?page=<%= page - 1 %>" class="page-btn">上一页</a>
+            <% } %>
+            <% for (var i = 1; i <= totalPages; i++) { %>
+              <a href="/tag/<%= encodeURIComponent(tagName) %>?page=<%= i %>" class="page-num <%= i === page ? 'active' : '' %>"><%= i %></a>
+            <% } %>
+            <% if (page < totalPages) { %>
+              <a href="/tag/<%= encodeURIComponent(tagName) %>?page=<%= page + 1 %>" class="page-btn">下一页</a>
+            <% } %>
+          </div>
+        <% } %>
+      <% } %>
+    </div>
+
+    <aside class="sidebar">
+      <div class="sidebar-widget">
+        <h3 class="widget-title">热门文章</h3>
+        <div class="hot-list">
+          <% hotArticles.slice(0, 8).forEach(function(h, i) { %>
+            <a href="/article/<%= h.id %>" class="hot-item">
+              <span class="hot-rank <%= i < 3 ? 'top' : '' %>"><%= i + 1 %></span>
+              <div class="hot-info">
+                <span class="hot-title"><%= h.title %></span>
+                <span class="hot-views"><%= h.views || 0 %> 阅读</span>
+              </div>
+            </a>
+          <% }) %>
+        </div>
+      </div>
+
+      <% if (tags.length > 0) { %>
+      <div class="sidebar-widget">
+        <h3 class="widget-title">热门标签</h3>
+        <div class="tag-cloud">
+          <% tags.forEach(function(t) { %>
+            <a href="/tag/<%= encodeURIComponent(t.name) %>" class="tag-item <%= t.name === tagName ? 'active' : '' %>"><%= t.name %></a>
+          <% }) %>
+        </div>
+      </div>
+      <% } %>
+    </aside>
+  </div>
+</section>
+
+<%- include('footer') %>

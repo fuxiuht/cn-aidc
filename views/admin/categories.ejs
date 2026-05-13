@@ -1,0 +1,37 @@
+<% var pageTitle = '分类管理' %>
+<%- include('header') %>
+
+<div class="panel">
+  <div class="panel-header"><h3>分类管理</h3></div>
+
+  <form method="POST" action="/admin/categories/save" class="inline-form">
+    <input type="text" name="name" placeholder="分类名称" required>
+    <input type="text" name="description" placeholder="描述（可选）">
+    <input type="number" name="sort_order" placeholder="排序" value="0" style="width:80px">
+    <button type="submit" class="btn btn-primary btn-sm">添加</button>
+  </form>
+
+  <table class="data-table" style="margin-top:20px">
+    <thead>
+      <tr><th>ID</th><th>名称</th><th>描述</th><th>文章数</th><th>排序</th><th>操作</th></tr>
+    </thead>
+    <tbody>
+      <% categories.forEach(function(c) { %>
+        <tr>
+          <td><%= c.id %></td>
+          <td><strong><%= c.name %></strong></td>
+          <td><%= c.description || '-' %></td>
+          <td><%= c.article_count %></td>
+          <td><%= c.sort_order %></td>
+          <td class="actions">
+            <form method="POST" action="/admin/categories/delete/<%= c.id %>" style="display:inline" onsubmit="return confirm('删除分类将取消关联文章的分类，确定？')">
+              <button type="submit" class="btn btn-sm btn-danger">删除</button>
+            </form>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+
+<%- include('footer') %>

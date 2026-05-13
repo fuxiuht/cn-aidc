@@ -1,0 +1,103 @@
+<% var pageTitle = article ? '编辑文章' : '新建文章' %>
+<%- include('header') %>
+
+<div class="panel">
+  <div class="panel-header"><h3><%= article ? '编辑文章' : '新建文章' %></h3></div>
+  <form method="POST" action="/admin/articles/save" enctype="multipart/form-data" class="article-form" id="articleForm">
+    <% if (article) { %>
+      <input type="hidden" name="id" value="<%= article.id %>">
+      <% if (article.cover_image) { %>
+        <input type="hidden" name="existing_cover" value="<%= article.cover_image %>">
+      <% } %>
+    <% } %>
+
+    <div class="form-group">
+      <label>文章标题</label>
+      <input type="text" name="title" value="<%= article ? article.title : '' %>" required placeholder="请输入文章标题">
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>分类</label>
+        <select name="category_id">
+          <option value="">选择分类</option>
+          <% categories.forEach(function(c) { %>
+            <option value="<%= c.id %>" <%= (article && article.category_id === c.id) ? 'selected' : '' %>><%= c.name %></option>
+          <% }) %>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>状态</label>
+        <select name="status">
+          <option value="draft" <%= (article && article.status === 'draft') ? 'selected' : '' %>>草稿</option>
+          <option value="published" <%= (!article || article.status === 'published') ? 'selected' : '' %>>发布</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>标签（多个标签用逗号分隔）</label>
+        <input type="text" name="tags" value="<%= article ? (article.tags || '') : '' %>" placeholder="例：AI芯片,数据中心,液冷">
+      </div>
+      <div class="form-group">
+        <label>推荐设置</label>
+        <div style="display:flex;gap:20px;padding-top:8px">
+          <label style="display:flex;align-items:center;gap:6px;font-weight:400;cursor:pointer">
+            <input type="checkbox" name="is_featured" value="1" <%= (article && article.is_featured) ? 'checked' : '' %>> 焦点推荐
+          </label>
+          <label style="display:flex;align-items:center;gap:6px;font-weight:400;cursor:pointer">
+            <input type="checkbox" name="is_hot" value="1" <%= (article && article.is_hot) ? 'checked' : '' %>> 热门文章
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>封面图片</label>
+      <% if (article && article.cover_image) { %>
+        <div class="current-cover"><img src="<%= article.cover_image %>" style="max-width:200px;border-radius:8px;margin-bottom:8px"></div>
+      <% } %>
+      <input type="file" name="cover" accept="image/*">
+    </div>
+
+    <div class="form-group">
+      <label>摘要</label>
+      <textarea name="summary" rows="2" placeholder="文章摘要（可选）"><%= article ? article.summary : '' %></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>正文内容</label>
+      <div id="editor" style="min-height:300px"><%- article ? article.content : '' %></div>
+      <input type="hidden" name="content" id="contentField">
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">保存</button>
+      <a href="/admin/articles" class="btn">取消</a>
+    </div>
+  </form>
+</div>
+
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+<script>
+  const quill = new Quill('#editor', {
+    theme: 'snow',
+    modules: {
+      toolbar: [
+        [{ header: [1, 2, 3, false] }],
+        ['bold', 'italic', 'underline', 'strike'],
+        [{ list: 'ordered' }, { list: 'bullet' }],
+        ['link', 'image', 'blockquote', 'code-block'],
+        ['clean']
+      ]
+    }
+  });
+
+  document.getElementById('articleForm').addEventListener('submit', function() {
+    document.getElementById('contentField').value = quill.root.innerHTML;
+  });
+</script>
+
+<%- include('footer') %>

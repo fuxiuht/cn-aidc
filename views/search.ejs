@@ -1,0 +1,82 @@
+<% var pageTitle = '搜索：' + q %>
+<%- include('header') %>
+
+<div class="breadcrumb">
+  <div class="container">
+    <a href="/">首页</a>
+    <span class="sep">›</span>
+    <span class="current">搜索结果</span>
+  </div>
+</div>
+
+<section class="search-page">
+  <div class="container content-layout">
+    <div class="content-left">
+      <div class="search-header">
+        <h1>搜索：<span class="search-keyword"><%= q %></span></h1>
+        <p class="search-count">共找到 <strong><%= totalCount %></strong> 篇相关文章</p>
+      </div>
+
+      <% if (articles.length === 0) { %>
+        <div class="empty-state">
+          <p>没有找到与 "<%= q %>" 相关的文章</p>
+          <p class="empty-hint">请尝试更换关键词</p>
+        </div>
+      <% } else { %>
+        <div class="article-list">
+          <% articles.forEach(function(a) { %>
+            <article class="article-card-row">
+              <a href="/article/<%= a.id %>">
+                <div class="card-cover-sm" style="background-image:url('<%= a.cover_image || '' %>')">
+                  <% if (!a.cover_image) { %><div class="placeholder-bg"></div><% } %>
+                </div>
+                <div class="card-info">
+                  <span class="card-cat"><%= a.category_name || '未分类' %></span>
+                  <h3><%= a.title %></h3>
+                  <p class="card-summary"><%= a.summary || '' %></p>
+                  <div class="card-meta">
+                    <time><%= (a.created_at || '').slice(0, 10) %></time>
+                    <span class="card-views"><%= a.views || 0 %> 阅读</span>
+                  </div>
+                </div>
+              </a>
+            </article>
+          <% }) %>
+        </div>
+
+        <% if (totalPages > 1) { %>
+          <div class="pagination">
+            <% if (page > 1) { %>
+              <a href="/search?q=<%= encodeURIComponent(q) %>&page=<%= page - 1 %>" class="page-btn">上一页</a>
+            <% } %>
+            <% for (var i = 1; i <= totalPages; i++) { %>
+              <a href="/search?q=<%= encodeURIComponent(q) %>&page=<%= i %>" class="page-num <%= i === page ? 'active' : '' %>"><%= i %></a>
+            <% } %>
+            <% if (page < totalPages) { %>
+              <a href="/search?q=<%= encodeURIComponent(q) %>&page=<%= page + 1 %>" class="page-btn">下一页</a>
+            <% } %>
+          </div>
+        <% } %>
+      <% } %>
+    </div>
+
+    <aside class="sidebar">
+      <div class="sidebar-widget">
+        <h3 class="widget-title">热门文章</h3>
+        <div class="hot-list">
+          <% hotArticles.slice(0, 8).forEach(function(h, i) { %>
+            <a href="/article/<%= h.id %>" class="hot-item">
+              <span class="hot-rank <%= i < 3 ? 'top' : '' %>"><%= i + 1 %></span>
+              <div class="hot-info">
+                <span class="hot-title"><%= h.title %></span>
+                <span class="hot-views"><%= h.views || 0 %> 阅读</span>
+              </div>
+            </a>
+          <% }) %>
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<%- include('footer') %>
