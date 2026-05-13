@@ -210,7 +210,7 @@ router.post('/register', (req, res) => {
     db.prepare(`
       INSERT INTO guests (name, company, title, phone, email, wechat, event_name)
       VALUES (?, ?, ?, ?, ?, ?, ?)
-    `).run(name, company || '', title || '', phone || '', email || '', wechat || '', event_name || '爱上文化馆2026');
+    `).run(name, company || '', title || '', phone || '', email || '', wechat || '', event_name || '');
 
     const categories = getCategories();
     res.render('register', { categories, success: '报名成功！感谢您的参与，届时请准时到场。', error: null });
@@ -227,7 +227,7 @@ router.get('/admin/guests', (req, res) => {
   }
 
   const guests = db.prepare(`
-    SELECT * FROM guests WHERE event_name = '爱上文化馆2026' ORDER BY registered_at DESC
+    SELECT * FROM guests ORDER BY registered_at DESC
   `).all();
 
   const totalCount = guests.length;

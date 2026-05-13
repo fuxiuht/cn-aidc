@@ -105,7 +105,7 @@ function createQuery(sql) {
           id: store.guests.length + 1,
           name: params[0], company: params[1] || '', title: params[2] || '',
           phone: params[3] || '', email: params[4] || '', wechat: params[5] || '',
-          event_name: params[6] || '爱上文化馆2026',
+          event_name: params[6] || '',
           registered_at: new Date().toISOString().slice(0, 19).replace('T', ' ')
         };
         store.guests.push(guest);
