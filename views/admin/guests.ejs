@@ -1,0 +1,75 @@
+<% var pageTitle = '嘉宾管理' %>
+<%- include('header') %>
+
+<style>
+.guests-page { padding: 20px 0; }
+.guests-stats { display: flex; gap: 20px; margin-bottom: 24px; }
+.stat-card { background: #fff; padding: 20px 28px; border-radius: 12px; flex: 1; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.stat-card h3 { font-size: 14px; color: #666; margin-bottom: 8px; }
+.stat-card .num { font-size: 32px; font-weight: 700; color: #1976d2; }
+.panel { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.panel-header { padding: 16px 24px; border-bottom: 1px solid #eee; }
+.panel-header h3 { font-size: 16px; color: #333; }
+.guest-table { width: 100%; border-collapse: collapse; }
+.guest-table th, .guest-table td { padding: 14px 16px; text-align: left; border-bottom: 1px solid #f0f0f0; font-size: 14px; }
+.guest-table th { background: #fafafa; color: #666; font-weight: 500; }
+.guest-table tr:hover td { background: #f9f9f9; }
+.badge { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 12px; }
+.badge-primary { background: #e3f2fd; color: #1976d2; }
+.empty-state { padding: 40px; text-align: center; color: #999; }
+</style>
+
+<div class="guests-page">
+  <div class="container">
+    <div class="guests-stats">
+      <div class="stat-card">
+        <h3>总报名人数</h3>
+        <div class="num"><%= totalCount %></div>
+      </div>
+      <div class="stat-card">
+        <h3>活动名称</h3>
+        <div class="num" style="font-size:20px">爱上文化馆2026</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <h3>报名列表</h3>
+      </div>
+      <% if (guests.length === 0) { %>
+        <div class="empty-state">暂无报名数据</div>
+      <% } else { %>
+        <table class="guest-table">
+          <thead>
+            <tr>
+              <th>序号</th>
+              <th>姓名</th>
+              <th>公司</th>
+              <th>职位</th>
+              <th>手机</th>
+              <th>邮箱</th>
+              <th>微信号</th>
+              <th>报名时间</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% guests.forEach(function(g, i) { %>
+              <tr>
+                <td><%= i + 1 %></td>
+                <td><%= g.name %></td>
+                <td><%= g.company || '-' %></td>
+                <td><%= g.title || '-' %></td>
+                <td><%= g.phone || '-' %></td>
+                <td><%= g.email || '-' %></td>
+                <td><%= g.wechat || '-' %></td>
+                <td><%= (g.registered_at || '').slice(0, 16) %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<%- include('footer') %>

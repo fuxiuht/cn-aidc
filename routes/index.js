@@ -191,4 +191,49 @@ router.get('/about', (req, res) => {
   res.render('about', { categories });
 });
 
+// 嘉宾注册页面
+router.get('/register', (req, res) => {
+  const categories = getCategories();
+  res.render('register', { categories, success: null, error: null });
+});
+
+// 提交注册
+router.post('/register', (req, res) => {
+  const { name, company, title, phone, email, wechat, event_name } = req.body;
+
+  if (!name) {
+    const categories = getCategories();
+    return res.render('register', { categories, success: null, error: '请填写姓名' });
+  }
+
+  try {
+    db.prepare(`
+      INSERT INTO guests (name, company, title, phone, email, wechat, event_name)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `).run(name, company || '', title || '', phone || '', email || '', wechat || '', event_name || '爱上文化馆2026');
+
+    const categories = getCategories();
+    res.render('register', { categories, success: '报名成功！感谢您的参与，届时请准时到场。', error: null });
+  } catch (err) {
+    const categories = getCategories();
+    res.render('register', { categories, success: null, error: '提交失败，请稍后重试' });
+  }
+});
+
+// 管理后台：查看注册列表
+router.get('/admin/guests', (req, res) => {
+  if (!req.session || !req.session.adminId) {
+    return res.redirect('/admin/login');
+  }
+
+  const guests = db.prepare(`
+    SELECT * FROM guests WHERE event_name = '爱上文化馆2026' ORDER BY registered_at DESC
+  `).all();
+
+  const totalCount = guests.length;
+  const categories = getCategories();
+
+  res.render('admin/guests', { guests, totalCount, categories, adminName: req.session.adminName });
+});
+
 module.exports = router;
